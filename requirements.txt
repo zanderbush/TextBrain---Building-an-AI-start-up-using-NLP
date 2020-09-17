@@ -5,3 +5,4 @@ connexion[swagger-ui]
 flask
 PyYaml
 flask_cors
+flask_wtf 
