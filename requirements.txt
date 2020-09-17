@@ -6,3 +6,4 @@ flask
 PyYaml
 flask_cors
 flask_wtf 
+transformers
