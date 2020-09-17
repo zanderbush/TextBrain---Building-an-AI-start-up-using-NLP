@@ -6,6 +6,18 @@ import os
 import yaml
 from flask import send_from_directory, redirect
 from flask_cors import CORS
+from flask_ngrok import run_with_ngrok
+from flask import Flask, render_template, url_for
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired
+from tabulate import tabulate
+import torch
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from flask import request
+import random
+import time
+
 
 # from backend.Project import Project # TODO !!
 from backend import AVAILABLE_MODELS
@@ -15,7 +27,11 @@ __author__ = 'Hendrik Strobelt, Sebastian Gehrmann'
 CONFIG_FILE_NAME = 'lmf.yml'
 projects = {}
 
-app = connexion.App(__name__, debug=False)
+
+app = Flask(__name__, root_path='/content/TextBrain---Building-an-AI-start-up-using-NLP')
+app.config['SECRET_KEY'] = '9bad6913d4358ac1395c5c94370ed090'
+run_with_ngrok(app)
+print(app.root_path)
 
 
 class Project:
@@ -132,20 +148,5 @@ parser.add_argument("--dir", type=str, default=os.path.abspath('data'))
 parser.add_argument("--no_cors", action='store_true')
 
 if __name__ == '__main__':
-    args = parser.parse_args()
-
-    if not args.no_cors:
-        CORS(app.app, headers='Content-Type')
-
-    app.run(port=int(args.port), debug=not args.nodebug, host=args.address)
-else:
-    args, _ = parser.parse_known_args()
-    # load_projects(args.dir)
-    try:
-        model = AVAILABLE_MODELS[args.model]
-    except KeyError:
-        print("Model {} not found. Make sure to register it.".format(
-            args.model))
-        print("Loading GPT-2 instead.")
-        model = AVAILABLE_MODELS['gpt-2']
-    projects[args.model] = Project(model, args.model)
+    app.run()
+    app.run()
